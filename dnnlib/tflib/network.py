@@ -582,7 +582,7 @@ def _legacy_output_transform_func(*expr, out_mul=1.0, out_add=0.0, out_shrink=1,
 
     if out_shrink > 1:
         ksize = [1, 1, out_shrink, out_shrink]
-        expr = [tf.nn.avg_pool(x, ksize=ksize, strides=ksize, padding="VALID", data_format="NCHW") for x in expr]
+        expr = [tf.nn.avg_pool(x, ksize=ksize, strides=ksize, padding="VALID", data_format="NHWC") for x in expr]
 
     if out_dtype is not None:
         if tf.as_dtype(out_dtype).is_integer:
