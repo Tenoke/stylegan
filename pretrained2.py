@@ -1,5 +1,4 @@
-import tensorflow
-print(tensorflow.pwrap_tensorflow.IsMklEnabled())
+import tensorflow; print(tensorflow.pywrap_tensorflow.IsMklEnabled())
 from IPython.display import Image, display
 import os
 import pickle
