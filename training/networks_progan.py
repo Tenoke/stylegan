@@ -49,7 +49,7 @@ def conv2d(x, fmaps, kernel, gain=np.sqrt(2), use_wscale=False):
     assert kernel >= 1 and kernel % 2 == 1
     w = get_weight([kernel, kernel, x.shape[1].value, fmaps], gain=gain, use_wscale=use_wscale)
     w = tf.cast(w, x.dtype)
-    return tf.nn.conv2d(x, w, strides=[1,1,1,1], padding='SAME', data_format='NCHW')
+    return tf.nn.conv2d(x, w, strides=[1,1,1,1], padding='SAME', data_format='NHWC')
 
 #----------------------------------------------------------------------------
 # Apply bias to the given activation tensor.
@@ -94,7 +94,7 @@ def upscale2d_conv2d(x, fmaps, kernel, gain=np.sqrt(2), use_wscale=False):
     w = tf.add_n([w[1:, 1:], w[:-1, 1:], w[1:, :-1], w[:-1, :-1]])
     w = tf.cast(w, x.dtype)
     os = [tf.shape(x)[0], fmaps, x.shape[2] * 2, x.shape[3] * 2]
-    return tf.nn.conv2d_transpose(x, w, os, strides=[1,1,2,2], padding='SAME', data_format='NCHW')
+    return tf.nn.conv2d_transpose(x, w, os, strides=[1,1,2,2], padding='SAME', data_format='NHWC')
 
 #----------------------------------------------------------------------------
 # Box filter downscaling layer.
@@ -104,7 +104,7 @@ def downscale2d(x, factor=2):
     if factor == 1: return x
     with tf.variable_scope('Downscale2D'):
         ksize = [1, 1, factor, factor]
-        return tf.nn.avg_pool(x, ksize=ksize, strides=ksize, padding='VALID', data_format='NCHW') # NOTE: requires tf_config['graph_options.place_pruned_graph'] = True
+        return tf.nn.avg_pool(x, ksize=ksize, strides=ksize, padding='VALID', data_format='NHWC') # NOTE: requires tf_config['graph_options.place_pruned_graph'] = True
 
 #----------------------------------------------------------------------------
 # Fused conv2d + downscale2d.
@@ -116,7 +116,7 @@ def conv2d_downscale2d(x, fmaps, kernel, gain=np.sqrt(2), use_wscale=False):
     w = tf.pad(w, [[1,1], [1,1], [0,0], [0,0]], mode='CONSTANT')
     w = tf.add_n([w[1:, 1:], w[:-1, 1:], w[1:, :-1], w[:-1, :-1]]) * 0.25
     w = tf.cast(w, x.dtype)
-    return tf.nn.conv2d(x, w, strides=[1,1,2,2], padding='SAME', data_format='NCHW')
+    return tf.nn.conv2d(x, w, strides=[1,1,2,2], padding='SAME', data_format='NHWC')
 
 #----------------------------------------------------------------------------
 # Pixelwise feature vector normalization.
