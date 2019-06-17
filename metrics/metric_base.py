@@ -109,7 +109,7 @@ class MetricBase:
     def _iterate_fakes(self, Gs, minibatch_size, num_gpus):
         while True:
             latents = np.random.randn(minibatch_size, *Gs.input_shape[1:])
-            fmt = dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=False)
+            fmt = dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=True)
             images = Gs.run(latents, None, output_transform=fmt, is_validation=True, num_gpus=num_gpus, assume_frozen=True)
             yield images
 
