@@ -44,7 +44,7 @@ def _blur2d(x, f=[1,2,1], normalize=True, flip=False, stride=1):
     x = tf.cast(x, tf.float32)  # tf.nn.depthwise_conv2d() doesn't support fp16
     f = tf.constant(f, dtype=x.dtype, name='filter')
     strides = [1, 1, stride, stride]
-    x = tf.nn.depthwise_conv2d(x, f, strides=strides, padding='SAME', data_format='NCHW')
+    x = tf.nn.depthwise_conv2d(x, f, strides=strides, padding='SAME', data_format='NHWC')
     x = tf.cast(x, orig_dtype)
     return x
 
