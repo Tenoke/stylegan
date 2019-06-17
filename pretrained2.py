@@ -37,7 +37,7 @@ rnd = np.random.RandomState(6)
 latents = rnd.randn(1,Gs.input_shape[1])
 
 # Generate image.
-fmt = dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=True)
+fmt = dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=False)
 images = Gs.run(latents, None, truncation_psi=0.7, randomize_noise=True, output_transform=fmt, num_gpus=1)
 
 # Save image.
